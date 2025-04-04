@@ -1,36 +1,31 @@
+<!-- index.html (Main Page) -->
+<!DOCTYPE html>
 <html>
-
 <head>
-    <title>Book Reviews</title>
+    <title>Course Management System</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-
 </head>
-
 <body>
-    <h1>Book Reviews</h1>
+    <header>
+        <h1>Course Management System</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('students') }}">Students</a></li>
+                <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                <li><a href="{{ url_for('sections') }}">Sections</a></li>
+                <li><a href="{{ url_for('rubrics') }}">Rubrics</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <!-- Add a div to input book data -->
-    <div id="addBook">
-        <h2>Add a Book</h2>
-        <input type="text" id="bookTitle" placeholder="Book Title">
-        <input type="text" id="publicationYear" placeholder="Publication Year">
-        <button onclick="addBook()">Add</button>
-    </div>
-
-    <!-- Display books in this div -->
-    <div id="bookList">
-        <!-- Book data will be displayed here dynamically -->
-    </div>
-
-    <button id="showBooksButton" onclick="showAllBooks()">Show All Books</button>
-
-    <!-- Display books in this div -->
-    <div id="allbooks">
-        <!-- Book data will be displayed here dynamically -->
-    </div>
-
+    <main>
+        <section class="welcome">
+            <h2>Welcome to the Course Management System</h2>
+            <p>Use the navigation menu to manage students, courses, sections, and rubrics.</p>
+        </section>
+    </main>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
-
 </html>

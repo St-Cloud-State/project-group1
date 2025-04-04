@@ -1,5 +1,8 @@
 // Array to store book data
-const books = [];
+const students = []; //was const book = [];
+const course = [];
+const section = [];
+const rubric = [];
 
 // Function to add a book to the list and send it to the server
 function addBook() {

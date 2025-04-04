@@ -1,0 +1,44 @@
+<!-- rubrics.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rubrics</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Rubric Management</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('students') }}">Students</a></li>
+                <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                <li><a href="{{ url_for('sections') }}">Sections</a></li>
+                <li><a href="{{ url_for('rubrics') }}">Rubrics</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Add a div to input rubric data -->
+    <div id="addRubric">
+        <h2>Add a Rubric</h2>
+        <input type="text" id="rubricId" placeholder="Rubric ID">
+        <input type="text" id="rubricDescription" placeholder="Rubric Description">
+        <button onclick="addRubric()">Add</button>
+    </div>
+
+    <!-- Display rubrics in this div -->
+    <div id="rubricList">
+        <!-- Rubric data will be displayed here dynamically -->
+    </div>
+
+    <button id="showRubricsButton" onclick="showAllRubrics()">Show All Rubrics</button>
+
+    <!-- Display all rubrics in this div -->
+    <div id="allRubrics">
+        <!-- All rubric data will be displayed here dynamically -->
+    </div>
+
+    <script src="{{ url_for('static', filename='rubrics.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!-- students.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Students</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Student Management</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('students') }}">Students</a></li>
+                <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                <li><a href="{{ url_for('sections') }}">Sections</a></li>
+                <li><a href="{{ url_for('rubrics') }}">Rubrics</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Add a div to input student data -->
+    <div id="addStudent">
+        <h2>Add a Student</h2>
+        <input type="text" id="studentName" placeholder="Student Name">
+        <input type="text" id="studentAddress" placeholder="Student Address">
+        <button onclick="addStudent()">Add</button>
+    </div>
+
+    <!-- Display students in this div -->
+    <div id="studentList">
+        <!-- Student data will be displayed here dynamically -->
+    </div>
+
+    <button id="showStudentsButton" onclick="showAllStudents()">Show All Students</button>
+
+    <!-- Display all students in this div -->
+    <div id="allStudents">
+        <!-- All student data will be displayed here dynamically -->
+    </div>
+
+    <script src="{{ url_for('static', filename='students.js') }}"></script>
+</body>
+</html>

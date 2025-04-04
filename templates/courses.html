@@ -1,0 +1,46 @@
+<!-- courses.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Courses</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Course Management</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('students') }}">Students</a></li>
+                <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                <li><a href="{{ url_for('sections') }}">Sections</a></li>
+                <li><a href="{{ url_for('rubrics') }}">Rubrics</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Add a div to input course data -->
+    <div id="addCourse">
+        <h2>Add a Course</h2>
+        <input type="text" id="courseName" placeholder="Course Name">
+        <input type="number" id="courseCredits" placeholder="Course Credits">
+        <input type="number" id="courseNumber" placeholder="Course Number">
+        <input type="text" id="rubricId" placeholder="Rubric ID">
+        <button onclick="addCourse()">Add</button>
+    </div>
+
+    <!-- Display courses in this div -->
+    <div id="courseList">
+        <!-- Course data will be displayed here dynamically -->
+    </div>
+
+    <button id="showCoursesButton" onclick="showAllCourses()">Show All Courses</button>
+
+    <!-- Display all courses in this div -->
+    <div id="allCourses">
+        <!-- All course data will be displayed here dynamically -->
+    </div>
+
+    <script src="{{ url_for('static', filename='courses.js') }}"></script>
+</body>
+</html>

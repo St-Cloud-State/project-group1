@@ -1,0 +1,45 @@
+<!-- sections.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sections</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Section Management</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('students') }}">Students</a></li>
+                <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                <li><a href="{{ url_for('sections') }}">Sections</a></li>
+                <li><a href="{{ url_for('rubrics') }}">Rubrics</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Add a div to input section data -->
+    <div id="addSection">
+        <h2>Add a Section</h2>
+        <input type="number" id="courseId" placeholder="Course ID">
+        <input type="number" id="sectionSemester" placeholder="Semester (1-3)">
+        <input type="number" id="sectionYear" placeholder="Year">
+        <button onclick="addSection()">Add</button>
+    </div>
+
+    <!-- Display sections in this div -->
+    <div id="sectionList">
+        <!-- Section data will be displayed here dynamically -->
+    </div>
+
+    <button id="showSectionsButton" onclick="showAllSections()">Show All Sections</button>
+
+    <!-- Display all sections in this div -->
+    <div id="allSections">
+        <!-- All section data will be displayed here dynamically -->
+    </div>
+
+    <script src="{{ url_for('static', filename='sections.js') }}"></script>
+</body>
+</html>
