@@ -32,13 +32,12 @@
         <!-- Rubric data will be displayed here dynamically -->
     </div>
 
-    <button id="showRubricsButton" onclick="showAllRubrics()">Show All Rubrics</button>
-
-    <!-- Display all rubrics in this div -->
-    <div id="allRubrics">
-        <!-- All rubric data will be displayed here dynamically -->
+    <div>
+        <h2>Search Courses by Rubric</h2>
+        <input type="text" id="searchRubricId" placeholder="Enter Rubric ID">
+        <button onclick="listCoursesByRubric()">Search</button>
     </div>
-
-    <script src="{{ url_for('static', filename='rubrics.js') }}"></script>
+    <div id="coursesByRubric"></div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

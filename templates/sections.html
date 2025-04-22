@@ -33,13 +33,13 @@
         <!-- Section data will be displayed here dynamically -->
     </div>
 
-    <button id="showSectionsButton" onclick="showAllSections()">Show All Sections</button>
-
-    <!-- Display all sections in this div -->
-    <div id="allSections">
-        <!-- All section data will be displayed here dynamically -->
+    <div>
+        <h2>Search Sections by Course</h2>
+        <input type="text" id="searchCourseId" placeholder="Enter Course ID">
+        <button onclick="listSectionsByCourse()">Search</button>
     </div>
+    <div id="sectionsByCourse"></div>
 
-    <script src="{{ url_for('static', filename='sections.js') }}"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

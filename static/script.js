@@ -1,6 +1,6 @@
 // Array to store book data
 const students = []; //was const book = [];
-const course = [];
+const courses = [];
 const section = [];
 const rubric = [];
 
@@ -39,6 +39,130 @@ function addBook() {
             console.error('Error adding book:', error);
         });
 }
+// Function to add a new student
+function addStudent() {
+    const studentName = document.getElementById('studentName').value;
+    const studentAddress = document.getElementById('studentAddress').value;
+    console.log("Test");
+    // Create a JSON object with student data
+    const studentData = {
+        student_name: studentName,
+        student_address: studentAddress
+    };
+
+
+    // Send the student data to the server via POST request
+    fetch('/api/students', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(studentData)
+    })
+    
+
+        .then(response => response.json())
+        .then(data => {
+            // Display a success message or handle errors if needed
+            console.log(data.message);
+
+            // Add the new student data to the students array
+            students.push(studentData);
+            console.log(students);
+
+            // Refresh the student list
+            displayStudents();
+        })
+        .catch(error => {
+            console.error('Error adding student:', error);
+        });
+}
+
+function addRubric() {
+    const rubricId = document.getElementById('rubricId').value;
+    const rubricDescription = document.getElementById('rubricDescription').value;
+
+    fetch('/api/rubrics', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            rubric_id: rubricId,
+            rubric_description: rubricDescription
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Error: ' + data.error);
+        } else {
+            alert('Rubric added successfully: ' + data.rubric_id);
+            // Optionally refresh the rubric list here
+        }
+    })
+    .catch(error => {
+        console.error('Error adding rubric:', error);
+    });
+}
+
+function addCourse() {
+    console.log("Function called")
+    const courseName = document.getElementById('courseName').value;
+    const courseCredits = document.getElementById('courseCredits').value;
+    const courseNumber = document.getElementById('courseNumber').value;
+    const rubric_id = document.getElementById('rubric_id').value;
+
+    const courseData = {
+        course_name: courseName,
+        course_credits: courseCredits,
+        course_number: courseNumber,
+        rubric_id: rubric_id
+    };
+ 
+    console.log("Sending course data:", courseData);
+    
+    // Send request with better error handling
+    fetch('/api/courses', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(courseData)
+    })
+    .then(async response => {
+        console.log("Server response status:", response.status);
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(`Server error (${response.status}): ${text}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Server response data:", data);
+        // Add course to array and display
+        courseData.course_id = data.course_id;
+        courses.push(courseData);
+        displaycourses();
+    })
+    .catch(error => {
+        console.error("Request failed:", error);
+        alert("Failed to add course: " + error.message);
+    });
+}
+
+    function displaycourses() {
+        const courseList = document.getElementById('courseList');
+        courseList.innerHTML = ''; // Clear existing course list
+    
+        courses.forEach(course => {
+            const courseElement = document.createElement('div');
+            courseElement.innerHTML = `
+                <h2>Added Successfully :${course.course_name}</h2>
+            `;
+            courseList.appendChild(courseElement);
+        });
+    }
 
 // Function to display books in the list
 function displayBooks() {
@@ -55,25 +179,199 @@ function displayBooks() {
     });
 }
 
-// Function to fetch and display all books from the server
-function showAllBooks() {
-    fetch('/api/books')
+// Function to add a new section
+function addSection() {
+    const courseId = document.getElementById('courseId').value;
+    const sectionSemester = document.getElementById('sectionSemester').value;
+    const sectionYear = document.getElementById('sectionYear').value;
+    // Create a JSON object with student data
+    const sectionData = {
+        course_Id: courseId,
+        section_Semester: sectionSemester,
+	section_Year: sectionYear,
+    };
+
+    // Send the student data to the server via POST request
+    fetch('/api/sections', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(sectionData)
+    })
+    
+
         .then(response => response.json())
         .then(data => {
-            const bookList = document.getElementById('allbooks');
-            bookList.innerHTML = ''; // Clear existing book list
-            console.log(data)
-            data.books.forEach(book => { // Access the 'books' key in the JSON response
-                const bookElement = document.createElement('div');
-                bookElement.innerHTML = `
-                    <h2>${book.title}</h2>
-                    <p>Publication Year: ${book.publication_year}</p>
+            // Display a success message or handle errors if needed
+            console.log(data.message);
+
+            // Add the new student data to the students array
+            section.push(sectionData);
+            console.log(section);
+
+            // Refresh the student list
+            displaySections();
+        })
+        .catch(error => {
+            console.error('Error adding section:', error);
+        })
+    }
+
+    
+function displaySections() {
+    const sectionList = document.getElementById('sectionList');
+    sectionList.innerHTML = ''; // Clear existing student list
+
+    section.forEach(section => {
+        const sectionElement = document.createElement('div');
+        sectionElement.innerHTML = `
+            <h2>Added Successfully :${section.section_Semester}</h2>
+        `;
+        sectionList.appendChild(sectionElement);
+    });
+}
+
+// Function to display students in the list
+function displayStudents() {
+    const studentList = document.getElementById('studentList');
+    studentList.innerHTML = ''; // Clear existing student list
+
+    students.forEach(student => {
+        const studentElement = document.createElement('div');
+        studentElement.innerHTML = `
+            <h2>Added Successfully :${student.student_name}</h2>
+        `;
+        studentList.appendChild(studentElement);
+    });
+}
+
+// Function to fetch and display all books from the server
+function showAllStudents() {
+    fetch('/api/get_students')
+        .then(response => response.json())
+        .then(data => {
+            const studentList = document.getElementById('allStudents'); 
+            studentList.innerHTML = ''; // Clear existing student list (not bookList)
+            console.log(data);
+            
+            if (!data.students || data.students.length === 0) {
+                studentList.innerHTML = '<p>No students found.</p>';
+                return;
+            }
+            
+            data.students.forEach(student => { // Access the 'students' key in the JSON response
+                const studentElement = document.createElement('div');
+                studentElement.innerHTML = `
+                    <h3>${student.student_name}</h3>
+                    <p>Student ID: ${student.student_id}</p>
+                    <p>Address: ${student.student_address || 'Not provided'}</p>
                 `;
-                bookList.appendChild(bookElement);
+                studentList.appendChild(studentElement);
             });
         })
         .catch(error => {
-            console.error('Error fetching all books:', error);
+            console.error('Error fetching all students:', error);
+            document.getElementById('allStudents').innerHTML = '<p>Error loading students. Please try again.</p>';
         });
 }
 
+
+
+
+function listCoursesByRubric() {
+    const rubricId = document.getElementById('searchRubricId').value;
+    
+    const coursesDiv = document.getElementById('coursesByRubric');
+    coursesDiv.innerHTML = '<p>Loading courses...</p>';
+    
+    fetch(`/api/courses/by-rubric/${rubricId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Server responded with status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            coursesDiv.innerHTML = `<h2>Courses in Rubric: ${rubricId}</h2>`;
+            
+            
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Credits</th>
+                        <th>Number</th>
+			<th>Rubric Id</th>
+                    </tr>
+                </thead>
+                <tbody id="courseTableBody">
+                </tbody>
+            `;
+            coursesDiv.appendChild(table);
+            
+            const tableBody = document.getElementById('courseTableBody');
+            data.courses.forEach(course => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${course.course_id}</td>
+                    <td>${course.course_name}</td>
+                    <td>${course.course_credits}</td>
+                    <td>${course.course_number}</td>
+                    <td>${course.rubric_id}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        }
+    
+    function listSectionsByCourse() {
+            const courseId = document.getElementById('searchCourseId').value;
+           
+            
+            const sectionsDiv = document.getElementById('sectionsByCourse');
+            sectionsDiv.innerHTML = '<p>Loading sections...</p>';
+            
+            fetch(`/api/sections/by-course/${courseId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Server responded with status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    sectionsDiv.innerHTML = `<h2>Sections for Course ID: ${courseId}</h2>`;
+                    
+                    const table = document.createElement('table');
+                    table.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>Section ID</th>
+                                <th>Semester</th>
+                                <th>Year</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sectionTableBody">
+                        </tbody>
+                    `;
+                    sectionsDiv.appendChild(table);
+                    
+                    const tableBody = document.getElementById('sectionTableBody');
+                    data.sections.forEach(section => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${section.section_id}</td>
+                            <td>${section.section_semester}</td>
+                            <td>${section.section_year}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching sections:', error);
+                    sectionsDiv.innerHTML = `<p style="color:red;">Error loading sections: ${error.message}</p>`;
+                });
+            }
+        

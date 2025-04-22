@@ -34,9 +34,9 @@ def init_db():
         
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS Course (
-            course_id INTEGER PRIMARY KEY,
+            course_Id INTEGER PRIMARY KEY,
             course_name TEXT NOT NULL,
-            course_creadits INTEGER NOT NULL,
+            course_credits INTEGER NOT NULL,
             course_number INTEGER,
             rubric_id TEXT,
             FOREIGN KEY (rubric_id) REFERENCES Rubrics (rubric_id)
@@ -46,10 +46,10 @@ def init_db():
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS Section (
             section_id INTEGER PRIMARY KEY,
-            course_id INTEGER,
+            course_Id INTEGER,
             section_semester INTEGER NOT NULL,
             section_year INTEGER NOT NULL,
-            FOREIGN KEY (course_id) REFERENCES Course (course_id)
+            FOREIGN KEY (course_Id) REFERENCES Course (course_Id)
         )
         ''')
         
@@ -81,7 +81,7 @@ def rubrics():
     return render_template('rubrics.html')
 
 # API endpoints for Students
-@app.route('/api/students', methods=['GET'])
+@app.route('/api/get_students', methods=['GET'])
 def get_all_students():
     try:
         conn = sqlite3.connect(DATABASE)
@@ -148,7 +148,7 @@ def get_all_courses():
         return jsonify({'error': str(e)})
 
 @app.route('/api/courses', methods=['POST'])
-def add_course():
+def add_Course():
     try:
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
@@ -156,14 +156,14 @@ def add_course():
         # Get course details from the request
         data = request.get_json()
         course_name = data.get('course_name')
-        course_creadits = data.get('course_creadits')
+        course_credits = data.get('course_credits')
         course_number = data.get('course_number')
         rubric_id = data.get('rubric_id')
 
         # Insert the course into the database
         cursor.execute(
-            "INSERT INTO Course (course_name, course_creadits, course_number, rubric_id) VALUES (?, ?, ?, ?)",
-            (course_name, course_creadits, course_number, rubric_id)
+            "INSERT INTO Course (course_name, course_credits, course_number, rubric_id) VALUES (?, ?, ?, ?)",
+            (course_name, course_credits, course_number, rubric_id)
         )
         
         # Get the ID of the newly inserted course
@@ -176,8 +176,37 @@ def add_course():
     except Exception as e:
         return jsonify({'error': str(e)})
 
+@app.route('/api/sections', methods=['POST'])
+def add_section():
+    try:
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        # Get section details from the request
+        data = request.get_json()
+        course_Id = data.get('course_Id')
+        section_Semester = data.get('section_Semester')
+        section_Year = data.get('section_Year')
+
+        # Insert the section into the database
+        cursor.execute("INSERT INTO Section (course_Id,section_Semester, section_Year) VALUES (?, ?, ?)", 
+                      (course_Id,section_Semester, section_Year))
+        
+        # Get the ID of the newly inserted student
+        section_id = cursor.lastrowid
+        
+        conn.commit()
+        conn.close()
+
+        return jsonify({'message': 'Section added successfully', 'section_id': section_id})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+
+
+
 # API endpoints for Sections
-@app.route('/api/sections', methods=['GET'])
+@app.route('/api/get_sections', methods=['GET'])
 def get_all_sections():
     try:
         conn = sqlite3.connect(DATABASE)
@@ -197,33 +226,7 @@ def get_all_sections():
     except Exception as e:
         return jsonify({'error': str(e)})
 
-@app.route('/api/sections', methods=['POST'])
-def add_section():
-    try:
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
 
-        # Get section details from the request
-        data = request.get_json()
-        course_id = data.get('course_id')
-        section_semester = data.get('section_semester')
-        section_year = data.get('section_year')
-
-        # Insert the section into the database
-        cursor.execute(
-            "INSERT INTO Section (course_id, section_semester, section_year) VALUES (?, ?, ?)",
-            (course_id, section_semester, section_year)
-        )
-        
-        # Get the ID of the newly inserted section
-        section_id = cursor.lastrowid
-        
-        conn.commit()
-        conn.close()
-
-        return jsonify({'message': 'Section added successfully', 'section_id': section_id})
-    except Exception as e:
-        return jsonify({'error': str(e)})
 
 # API endpoints for Rubrics
 @app.route('/api/rubrics', methods=['GET'])
@@ -245,6 +248,29 @@ def get_all_rubrics():
         return jsonify({'rubrics': rubric_list})
     except Exception as e:
         return jsonify({'error': str(e)})
+       
+@app.route('/api/courses/by-rubric/<rubric_id>', methods=['GET'])
+def  listCoursesByRubric(rubric_id):
+    try:
+        conn = sqlite3.connect(DATABASE)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        # Get courses for the specified rubric
+        print(f"Searching for courses with rubric_id = {rubric_id}")
+        cursor.execute("SELECT * FROM Course WHERE rubric_id = ?", (rubric_id,))
+        courses = cursor.fetchall()
+        print(f"Found {len(courses)} courses")
+        
+        # Convert to dictionaries
+        course_list = [dict(course) for course in courses]
+        print(f"Course list: {course_list}")
+        
+        conn.close()
+        return jsonify({'courses': course_list})
+    except Exception as e:
+        print(f"Error in get_courses_by_rubric: {str(e)}")
+        return jsonify({'error': str(e)})
 
 @app.route('/api/rubrics', methods=['POST'])
 def add_rubric():
@@ -252,23 +278,53 @@ def add_rubric():
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
 
-        # Get rubric details from the request
+        # Enable foreign key constraints (good practice)
+        cursor.execute("PRAGMA foreign_keys = ON")
+
+        # Get rubric data from request
         data = request.get_json()
         rubric_id = data.get('rubric_id')
         rubric_description = data.get('rubric_description')
 
-        # Insert the rubric into the database
+        # Validate input
+        if not rubric_id or not rubric_description:
+            return jsonify({'error': 'Rubric ID and description are required'}), 400
+
+        # Insert rubric into database
         cursor.execute(
             "INSERT INTO Rubrics (rubric_id, rubric_description) VALUES (?, ?)",
             (rubric_id, rubric_description)
         )
-        
+
         conn.commit()
         conn.close()
 
         return jsonify({'message': 'Rubric added successfully', 'rubric_id': rubric_id})
+    except sqlite3.IntegrityError as e:
+        return jsonify({'error': f"Rubric ID '{rubric_id}' already exists."}), 400
     except Exception as e:
-        return jsonify({'error': str(e)})
+        return jsonify({'error': str(e)}), 500
 
+
+@app.route('/api/sections/by-course/<int:course_Id>', methods=['GET'])
+def get_sections_by_course(course_Id):
+        try:
+            conn = sqlite3.connect(DATABASE)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+        
+            # Get sections for the specified course
+            cursor.execute("SELECT * FROM Section WHERE course_Id = ?", (course_Id,))
+            sections = cursor.fetchall()
+            conn.close()
+
+            # Convert to dictionaries
+            section_list = [dict(section) for section in sections]
+        
+            return jsonify({'sections': section_list})
+        except Exception as e:
+            return jsonify({'error': str(e)})
+       
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
+        

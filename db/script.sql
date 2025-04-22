@@ -4,6 +4,11 @@ student_name TEXT NOT NULL,
 student_address TEXT
 );
 
+CREATE TABLE IF NOT EXISTS Rubrics (
+rubric_id TEXT PRIMARY KEY,
+rubric_description TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS Course (
 course_id INTEGER PRIMARY KEY,
 course_name TEXT NOT NULL,
@@ -19,11 +24,6 @@ course_Id INTEGER,
 section_semester INTEGER NOT NULL,
 section_year INTEGER NOT NULL,
 FOREIGN KEY (course_Id) REFERENCES Course (course_Id)
-);
-
-CREATE TABLE IF NOT EXISTS Rubrics (
-rubric_id TEXT PRIMARY KEY,
-rubric_description TEXT NOT NULL
 );
 
 ------------------
