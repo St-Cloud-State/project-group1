@@ -7,21 +7,23 @@ student_address TEXT
 CREATE TABLE IF NOT EXISTS Course (
 course_id INTEGER PRIMARY KEY,
 course_name TEXT NOT NULL,
-course_creadits INTEGER NOT NULL,
+course_credits INTEGER NOT NULL,
 course_number INTEGER,
+rubric_id TEXT, 
 FOREIGN KEY (rubric_id) REFERENCES Rubrics (rubric_id)
 );
 
 CREATE TABLE IF NOT EXISTS Section (
 section_id INTEGER PRIMARY KEY,
-course_id INTEGER,
+course_Id INTEGER,
 section_semester INTEGER NOT NULL,
-section_year INTEGER NOT NULL
+section_year INTEGER NOT NULL,
+FOREIGN KEY (course_Id) REFERENCES Course (course_Id)
 );
 
 CREATE TABLE IF NOT EXISTS Rubrics (
 rubric_id TEXT PRIMARY KEY,
-rubric_description TEXT NOT NULL,
+rubric_description TEXT NOT NULL
 );
 
 ------------------
