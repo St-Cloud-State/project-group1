@@ -396,6 +396,49 @@ def get_students_in_section(section_id):
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/api/student_courses/<student_name>', methods=['GET'])
+def get_student_courses(student_name):
+    try:
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        
+        cursor.execute('''
+            SELECT section_id_1, section_id_2, section_id_3, section_id_4, section_id_5 
+            FROM Student WHERE student_name = ?
+        ''', (student_name,))
+        row = cursor.fetchone()
+
+        if not row:
+            return jsonify({'error': 'Student not found'}), 404
+
+        
+        section_ids = [sid for sid in row if sid and sid != "-1"]
+
+        if not section_ids:
+            return jsonify({'courses': []})
+
+      
+        placeholders = ','.join(['?'] * len(section_ids))
+        cursor.execute(f'''
+            SELECT DISTINCT Course.course_name, Course.course_number, Course.course_credits
+            FROM Section
+            JOIN Course ON Section.course_Id = Course.course_Id
+            WHERE Section.section_id IN ({placeholders})
+        ''', section_ids)
+
+        courses = cursor.fetchall()
+        course_list = [
+            {'course_name': c[0], 'course_number': c[1], 'course_credits': c[2]} for c in courses
+        ]
+
+        conn.close()
+        return jsonify({'courses': course_list})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
         

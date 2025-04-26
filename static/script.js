@@ -447,3 +447,42 @@ function searchStudentsBySection() {
             document.getElementById('studentsInSectionList').innerHTML = '<p>Error loading data.</p>';
         });
 }
+
+function getCoursesForStudent() {
+    const studentName = document.getElementById('studentCourseInput').value;
+    const output = document.getElementById('studentCoursesResult');
+    output.innerHTML = '';  // Clear previous results
+
+    fetch(`/api/student_courses/${encodeURIComponent(studentName)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                output.innerHTML = `<p>${data.error}</p>`;
+                return;
+            }
+
+            if (!data.courses || data.courses.length === 0) {
+                output.innerHTML = '<p>No courses found for this student.</p>';
+                return;
+            }
+
+            // Display each course nicely
+            data.courses.forEach(course => {
+                const div = document.createElement('div');
+                div.classList.add('course-entry');
+                div.innerHTML = `
+                    <h4>${course.course_name}</h4>
+                    <ul>
+                        <li><strong>Course Number:</strong> ${course.course_number}</li>
+                        <li><strong>Credits:</strong> ${course.course_credits}</li>
+                    </ul>
+                `;
+                output.appendChild(div);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            output.innerHTML = '<p>Error retrieving courses.</p>';
+        });
+}
+
