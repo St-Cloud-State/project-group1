@@ -54,13 +54,6 @@
         </select>
     
     <button onclick="changeSection()">Add</button>
-</div>
-    <button id="showStudentsButton" onclick="showAllStudents()">Show All Students</button>
-
-    <!-- Display all students in this div -->
-    <div id="allStudents">
-        <!-- All student data will be displayed here dynamically -->
-    </div>
 
     <div id="sectionStudents">
         <h2>Find Students by Section</h2>
@@ -81,7 +74,13 @@
         <!-- Courses will be displayed here -->
     </div>
     
+</div>
+<button id="showStudentsButton" onclick="showAllStudents()">Show All Transcripts</button>
 
+<!-- Display all students in this div -->
+<div id="allStudents">
+    <!-- All student data will be displayed here dynamically -->
+</div>
     
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>

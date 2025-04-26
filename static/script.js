@@ -273,7 +273,8 @@ function showAllStudents() {
                     if (sectionId && sectionId !== "-1") {
                         sectionsHtml += `
                             <div class="section-grade">
-                                <p>Section ${i}: ${sectionId} ${gradeId}</p>
+                                <p>Section ${i}:${gradeId}</p>
+                                <p>Grade ${i}:${gradeId}</p>
                             </div>
                         `;
                     }
