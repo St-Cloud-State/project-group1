@@ -21,7 +21,12 @@ def init_db():
         CREATE TABLE IF NOT EXISTS Student (
             student_id INTEGER PRIMARY KEY,
             student_name TEXT NOT NULL,
-            student_address TEXT
+            student_address TEXT,
+            section_id_1 TEXT,
+            section_id_2 TEXT,
+            section_id_3 TEXT,
+            section_id_4 TEXT,
+            section_id_5 TEXT            
         )
         ''')
         
@@ -111,18 +116,23 @@ def add_student():
         data = request.get_json()
         student_name = data.get('student_name')
         student_address = data.get('student_address')
-
+        section_id_1 = "-1"
+        section_id_2 = "-1"
+        section_id_3 = "-1"
+        section_id_4 = "-1"
+        section_id_5 = "-1"    
+        
         # Insert the student into the database
-        cursor.execute("INSERT INTO Student (student_name, student_address) VALUES (?, ?)", 
-                      (student_name, student_address))
+        cursor.execute("INSERT INTO Student (student_name, student_address, section_id_1, section_id_2, section_id_3, section_id_4, section_id_5) VALUES (?, ?, ?, ?, ?, ?, ?)", 
+                      (student_name, student_address, section_id_1, section_id_2, section_id_3, section_id_4, section_id_5))
         
         # Get the ID of the newly inserted student
         student_id = cursor.lastrowid
-        
+       
         conn.commit()
         conn.close()
 
-        return jsonify({'message': 'Student added successfully', 'student_id': student_id})
+        return jsonify({'message': 'Student added successfully', 'student_id': student_id , 'section_id_1': section_id_1, 'section_id_3': section_id_3 , 'section_id_5': section_id_5})
     except Exception as e:
         return jsonify({'error': str(e)})
 
@@ -325,6 +335,42 @@ def get_sections_by_course(course_Id):
         except Exception as e:
             return jsonify({'error': str(e)})
        
+
+@app.route('/api/change_section', methods=['PUT'])
+def change_section():
+    try:
+        data = request.get_json()
+        student_name = data.get('stuName')
+        new_section_id = data.get('Id')
+        section_slot = data.get('slot')
+
+
+        if section_slot not in ['1', '2', '3', '4', '5']:
+            return jsonify({'error': 'Invalid section slot'}), 400\
+
+        column_name = f'section_id_{section_slot}'
+
+
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+
+        query = f"UPDATE Student SET {column_name} = ? WHERE student_name = ?"
+        cursor.execute(query, (new_section_id, student_name))
+
+        if cursor.rowcount ==0:
+            return jsonify({'error': 'Student not found'}), 404
+
+
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({'message' : f'Section updated for {student_name}'})
+    except Exception as e:
+        return jsonify ({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
         
+

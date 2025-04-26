@@ -31,7 +31,21 @@
     <div id="studentList">
         <!-- Student data will be displayed here dynamically -->
     </div>
-
+<!-- Add a div to input student data -->
+<div id="change_section">
+    <h2>Change a section</h2>
+    <input type="text" id="studentName2" placeholder="Student Name">
+    <input type="text" id="section_id" placeholder="Section Id">
+    <select id="section_slot">
+        <label for="section_slot">Section Slot:</label>
+        <option value="1">Section 1</option>
+        <option value="2">Section 2</option>
+        <option value="3">Section 3</option>
+        <option value="4">Section 4</option>
+        <option value="5">Section 5</option>
+    </select>
+    <button onclick="changeSection()">Add</button>
+</div>
     <button id="showStudentsButton" onclick="showAllStudents()">Show All Students</button>
 
     <!-- Display all students in this div -->

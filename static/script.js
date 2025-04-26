@@ -122,7 +122,6 @@ function addCourse() {
  
     console.log("Sending course data:", courseData);
     
-    // Send request with better error handling
     fetch('/api/courses', {
         method: 'POST',
         headers: {
@@ -265,6 +264,11 @@ function showAllStudents() {
                 studentElement.innerHTML = `
                     <h3>${student.student_name}</h3>
                     <p>Student ID: ${student.student_id}</p>
+                    <p>Section ID: ${student.section_id_1}</p>
+                    <p>Section ID: ${student.section_id_2}</p>
+                    <p>Section ID: ${student.section_id_3}</p>
+                    <p>Section ID: ${student.section_id_4}</p>
+                    <p>Section ID: ${student.section_id_5}</p>
                     <p>Address: ${student.student_address || 'Not provided'}</p>
                 `;
                 studentList.appendChild(studentElement);
@@ -375,3 +379,25 @@ function listCoursesByRubric() {
                 });
             }
         
+
+function changeSection(){
+
+    const studentName2 = document.getElementById('studentName2').value;
+    const sectionId = document.getElementById('section_id').value;
+    const sectionSlot = document.getElementById('section_slot').value;
+    fetch('/api/change_section',{
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ stuName: studentName2, Id: sectionId, slot: sectionSlot })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('studentName2').value = '';
+        document.getElementById('section_id').value = '';
+        document.getElementById('section_slot').selectedIndex = 0;
+        showAllStudents();
+    })
+
+
+    
+}

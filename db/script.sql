@@ -1,7 +1,12 @@
 CREATE TABLE IF NOT EXISTS Student (
 student_id INTEGER PRIMARY KEY,
 student_name TEXT NOT NULL,
-student_address TEXT
+student_address TEXT,
+section_id_1 TEXT,
+section_id_2 TEXT,
+section_id_3 TEXT,
+section_id_4 TEXT,
+section_id_5 TEXT
 );
 
 CREATE TABLE IF NOT EXISTS Rubrics (
