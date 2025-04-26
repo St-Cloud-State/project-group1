@@ -261,15 +261,32 @@ function showAllStudents() {
             
             data.students.forEach(student => { // Access the 'students' key in the JSON response
                 const studentElement = document.createElement('div');
+                studentElement.classList.add('student-card');
+                
+                let sectionsHtml = '';
+                
+                // Create section and grade pairs
+                for (let i = 1; i <= 5; i++) {
+                    const sectionId = student[`section_id_${i}`];
+                    const gradeId = student[`grade_id_${i}`];
+                    
+                    if (sectionId && sectionId !== "-1") {
+                        sectionsHtml += `
+                            <div class="section-grade">
+                                <p>Section ${i}: ${sectionId} ${gradeId}</p>
+                            </div>
+                        `;
+                    }
+                }
                 studentElement.innerHTML = `
                     <h3>${student.student_name}</h3>
                     <p>Student ID: ${student.student_id}</p>
-                    <p>Section ID: ${student.section_id_1}</p>
-                    <p>Section ID: ${student.section_id_2}</p>
-                    <p>Section ID: ${student.section_id_3}</p>
-                    <p>Section ID: ${student.section_id_4}</p>
-                    <p>Section ID: ${student.section_id_5}</p>
                     <p>Address: ${student.student_address || 'Not provided'}</p>
+                    <div class="sections-container">
+                        <h4>Enrolled Sections:</h4>
+                        ${sectionsHtml || '<p>No sections assigned</p>'}
+                    </div>
+
                 `;
                 studentList.appendChild(studentElement);
             });
@@ -385,19 +402,33 @@ function changeSection(){
     const studentName2 = document.getElementById('studentName2').value;
     const sectionId = document.getElementById('section_id').value;
     const sectionSlot = document.getElementById('section_slot').value;
+    const grade = document.getElementById('grade_value').value;
+
+    if (!studentName2 || !sectionId || !sectionSlot) {
+        alert('Please fill in all required fields');
+        return;
+    }
+
     fetch('/api/change_section',{
         method: 'PUT',
         headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify({ stuName: studentName2, Id: sectionId, slot: sectionSlot })
+        body: JSON.stringify({ stuName: studentName2, Id: sectionId, sSlot: sectionSlot, grade: grade })
     })
     .then(response => response.json())
     .then(data => {
         document.getElementById('studentName2').value = '';
         document.getElementById('section_id').value = '';
         document.getElementById('section_slot').selectedIndex = 0;
+        document.getElementById('grade_value').selectedIndex = 0;
+
+        alert(data.message || 'Section and grade updated successfully');
+
         showAllStudents();
     })
-
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to update section and grade');
+    });
 
     
 }

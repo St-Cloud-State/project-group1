@@ -26,7 +26,12 @@ def init_db():
             section_id_2 TEXT,
             section_id_3 TEXT,
             section_id_4 TEXT,
-            section_id_5 TEXT            
+            section_id_5 TEXT,
+            grade_id_1 TEXT,
+            grade_id_2 TEXT,
+            grade_id_3 TEXT,
+            grade_id_4 TEXT,
+            grade_id_5 TEXT            
         )
         ''')
         
@@ -117,10 +122,15 @@ def add_student():
         student_name = data.get('student_name')
         student_address = data.get('student_address')
         section_id_1 = "-1"
-        section_id_2 = "-1"
-        section_id_3 = "-1"
-        section_id_4 = "-1"
-        section_id_5 = "-1"    
+        grade_id_1 = "Z"
+        section_id_2 = "-1" 
+        grade_id_2 = "Z"
+        section_id_3 = "-1" 
+        grade_id_3 = "Z"
+        section_id_4 = "-1" 
+        grade_id_4 = "Z"
+        section_id_5 = "-1" 
+        grade_id_5 = "Z"  
         
         # Insert the student into the database
         cursor.execute("INSERT INTO Student (student_name, student_address, section_id_1, section_id_2, section_id_3, section_id_4, section_id_5) VALUES (?, ?, ?, ?, ?, ?, ?)", 
@@ -342,22 +352,22 @@ def change_section():
         data = request.get_json()
         student_name = data.get('stuName')
         new_section_id = data.get('Id')
-        section_slot = data.get('slot')
-
+        section_slot = data.get('sSlot')
+        grade_value = data.get('grade')
 
         if section_slot not in ['1', '2', '3', '4', '5']:
-            return jsonify({'error': 'Invalid section slot'}), 400\
+            return jsonify({'error': 'Invalid section slot'}), 400
 
-        column_name = f'section_id_{section_slot}'
+        section_column_name = f'section_id_{section_slot}'
+        grade_column_name = f'grade_id_{section_slot}'
 
 
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
 
 
-        query = f"UPDATE Student SET {column_name} = ? WHERE student_name = ?"
-        cursor.execute(query, (new_section_id, student_name))
-
+        query = f"UPDATE Student SET {section_column_name} = ?, {grade_column_name} = ? WHERE student_name = ?"
+        cursor.execute(query, (new_section_id, grade_value, student_name))
         if cursor.rowcount ==0:
             return jsonify({'error': 'Student not found'}), 404
 
