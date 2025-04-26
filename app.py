@@ -370,6 +370,32 @@ def change_section():
     except Exception as e:
         return jsonify ({'error': str(e)}), 500
 
+
+@app.route('/api/students_in_section/<section_id>', methods=['GET'])
+def get_students_in_section(section_id):
+    try:
+        conn = sqlite3.connect(DATABASE)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        query = """
+        SELECT * FROM Student 
+        WHERE section_id_1 = ?
+           OR section_id_2 = ?
+           OR section_id_3 = ?
+           OR section_id_4 = ?
+           OR section_id_5 = ?
+        """
+        cursor.execute(query, (section_id, section_id, section_id, section_id, section_id))
+        rows = cursor.fetchall()
+        conn.close()
+
+        students = [dict(row) for row in rows]
+        return jsonify({'students': students})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
         

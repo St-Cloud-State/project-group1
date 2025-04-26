@@ -53,6 +53,18 @@
         <!-- All student data will be displayed here dynamically -->
     </div>
 
+    <div id="sectionStudents">
+        <h2>Find Students by Section</h2>
+        <input type="text" id="sectionSearchInput" placeholder="Enter Section ID (e.g. MATH101)">
+        <button onclick="searchStudentsBySection()">Search</button>
+    </div>
+    
+    <div id="studentsInSectionList">
+        <!-- Students in the section will show here -->
+    </div>
+    
+
+    
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

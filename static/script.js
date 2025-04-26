@@ -401,3 +401,49 @@ function changeSection(){
 
     
 }
+
+function getStudentsBySection(sectionId) {
+    fetch(`/api/students_in_section/${sectionId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Students in section:", data.students);
+            // You can loop and display them if you want
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function searchStudentsBySection() {
+    const sectionId = document.getElementById('sectionSearchInput').value;
+    fetch(`/api/students_in_section/${encodeURIComponent(sectionId)}`)
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('studentsInSectionList');
+            container.innerHTML = '';
+
+            if (!data.students || data.students.length === 0) {
+                container.innerHTML = '<p>No students found in this section.</p>';
+                return;
+            }
+
+            data.students.forEach(student => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <h4>${student.student_name}</h4>
+                    <p>ID: ${student.student_id}</p>
+                    <p>Address: ${student.student_address || 'N/A'}</p>
+                    <p>Sections: 
+                        ${student.section_id_1}, 
+                        ${student.section_id_2}, 
+                        ${student.section_id_3}, 
+                        ${student.section_id_4}, 
+                        ${student.section_id_5}
+                    </p>
+                `;
+                container.appendChild(div);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching students by section:', error);
+            document.getElementById('studentsInSectionList').innerHTML = '<p>Error loading data.</p>';
+        });
+}
